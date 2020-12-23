@@ -25,4 +25,4 @@ ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar ${FOLDER
 WORKDIR ${FOLDER}
 EXPOSE ${PICAPPORT_PORT}
 
-ENTRYPOINT /bin/bash -c java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=${FOLDER} -jar picapport-headless.jar
+ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=${FOLDER} -jar picapport-headless.jar
