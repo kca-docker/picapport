@@ -11,7 +11,7 @@ ENV PICAPPORT_LOG=WARNING
 ENV XMS=256m
 ENV XMX=2048m
 
-RUN dnf --setopt=install_weak_deps=False --best install -y java && echo "$(java -version)"
+RUN dnf --setopt=install_weak_deps=False --best install -y java && echo "$(java -version)" && dnf clean all \
  && mkdir -p /opt/picapport/.picapport \
  && printf ""%s\n%s\n%s\n" "server.port=${PICAPPORT_PORT}" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties"
 
