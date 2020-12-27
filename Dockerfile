@@ -19,8 +19,7 @@ ARG JAVA=java-11-openjdk-headless
 RUN microdnf install --nodocs ${JAVA} \
  && microdnf clean all \
  && mkdir -p /opt/picapport/.picapport \
- && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties \
- && chown picapport:root -R /opt/picapport
+ && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties 
  
  
 ARG VERSION=9-0-01
