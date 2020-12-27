@@ -3,28 +3,36 @@ ARG IMAGE=registry.access.redhat.com/ubi8/ubi-minimal
 
 FROM ${IMAGE}
 
-ARG PORT=80
+MAINTAINER Briezh Khenloo
+### Required Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels#####
+LABEL name="briezh/picapport" \
+      vendor="aka BKhenloo" \
+      maintainer="Briezh Khneloo" \
+      version="0.0.1" \
+      summary="Picapport photo server" \
+      description="Picapport | The private photo server" \
+      run="docker run -rm -p 8080:80 -v <hostdir>:srv/photo -dt docker.io/briezh/picapport"
+
+
+ARG JAVA=java-11-openjdk-headless
+
+RUN microdnf install --nodocs ${JAVA} \
+ && microdnf clean all \
+ && mkdir -p /opt/picapport/.picapport \
+ && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties \
+ && chown picapport:root -R /opt/picapport
+ 
+ 
 ARG VERSION=9-0-01
-ARG FOLDER=/opt/picapport
-ARG CFGFOLDER=/.picapport
-ARG CFGFILE=picapport.properties
-ARG PICAPPORT_PIC=/srv/photo
-ARG PICAPPORT_PORT=${PORT}
 
-RUN microdnf install java-1.8.0-openjdk-headless \
- &&	microdnf clean all \
- && echo "$(java -version)" \
- && mkdir -p ${FOLDER}${CFGFOLDER} \
- && printf "%s\n%s\n%s\n" "server.port=${PICAPPORT_PORT}" "robot.root.0.path=${PICAPPORT_PIC}" "foto.jpg.usecache=2" > ${FOLDER}${CFGFOLDER}/${CFGFILE}
+WORKDIR /opt/picapport
+EXPOSE 80
 
-ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar ${FOLDER}/picapport-headless.jar
-
-WORKDIR ${FOLDER}
-EXPOSE ${PICAPPORT_PORT}
+ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar /opt/picapport/picapport-headless.jar
 
 ENV PICAPPORT_LANG=de \
     PICAPPORT_LOG=WARNING \
     XMS=256m \
     XMX=2048m
 
-ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=${FOLDER} -jar picapport-headless.jar
+ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=/opt/picapport -jar picapport-headless.jar
