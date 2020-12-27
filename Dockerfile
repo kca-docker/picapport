@@ -21,13 +21,13 @@ RUN microdnf install --nodocs ${JAVA} \
  && mkdir -p /opt/picapport/.picapport \
  && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties 
  
- 
-ARG VERSION=9-0-01
 
+ADD https://www.picapport.de/download/9-0-01/picapport-headless.jar /opt/picapport/picapport-headless.jar
+
+ 
 WORKDIR /opt/picapport
 EXPOSE 80
 
-ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar /opt/picapport/picapport-headless.jar
 
 ENV PICAPPORT_LANG=de \
     PICAPPORT_LOG=WARNING \
