@@ -52,6 +52,28 @@ $ docker run -d briezh/picapport:fedora
 
 See [config](https://wiki.picapport.de/display/PIC/PicApport-Server+Guide) for further information.
 
+### Useing Podman instead of Docker
+
+If using `podman` Version >=1.9 instead of `docker` it should be possible to use the `auto-update` feature with `systemd`.
+
+First create the container (pod) than run `generate` command. The systemd service files will be created within the same folder.
+These .service file(s) should be moved to a systemd folder. 
+If the system uses SELinux the new files must be updated with the correct labels. 
+Then the systemd daemon must reload the service files.
+
+```shell
+$ podman create --name <container_name> \
+ -p [host]:8080 \
+ -v [host]:/opt/picapport:Z \
+ -l "io.containers.autoupdate=image" \
+ -dt briezh/picapport:latest
+
+$ podman generate systemd --new --name <container_name> --files
+$ mv *.service /usr/lib/systemd/
+$ restorecon -Rv /usr/lib/systemd/
+$ systemctl daemon-reload
+```
+
 ## Find Us
 
 * [GitHub](https://github.com/BKhenloo/holdingnuts_server)
