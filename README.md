@@ -66,7 +66,7 @@ $ podman create --name <container_name> \
  -p [host]:8080 \
  -v [host]:/opt/picapport:Z \
  -l "io.containers.autoupdate=image" \
- -dt briezh/picapport:latest
+ -t briezh/picapport:latest
 
 $ podman generate systemd --new --name <container_name> --files
 $ mv *.service /usr/lib/systemd/
