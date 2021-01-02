@@ -52,7 +52,7 @@ $ docker run -d briezh/picapport:fedora
 
 See [config](https://wiki.picapport.de/display/PIC/PicApport-Server+Guide) for further information.
 
-### Useing Podman instead of Docker
+### Using Podman instead of Docker
 
 If using `podman` Version >=1.9 instead of `docker` it should be possible to use the `auto-update` feature with `systemd`.
 
@@ -72,6 +72,8 @@ $ podman generate systemd --new --name <container_name> --files
 $ mv *.service /usr/lib/systemd/
 $ restorecon -Rv /usr/lib/systemd/
 $ systemctl daemon-reload
+
+$ systemctl start <service> --now
 ```
 
 See [docs.podman.io](http://docs.podman.io/en/latest/markdown/podman-generate-systemd.1.html) for further information.
