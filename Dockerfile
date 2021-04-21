@@ -31,8 +31,8 @@ ENV PICAPPORT_LANG=de \
     XMX=2048m
 
 
-LABEL version="9.0.01"
-ADD https://www.picapport.de/download/9-0-01/picapport-headless.jar /opt/picapport/picapport-headless.jar
+LABEL version="9.1.07"
+ADD https://www.picapport.de/download/9-1-07/picapport-headless.jar /opt/picapport/picapport-headless.jar
 
 
 ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=/opt/picapport -jar picapport-headless.jar
