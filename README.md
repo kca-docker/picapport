@@ -46,9 +46,10 @@ $ docker run -d briezh/picapport:fedora
 * `/opt/picapport` - Picapport working directory.
 * `/opt/picapport/.picapport` - Picapport configuration folder.
 
-#### Useful File Locations
+#### Useful Files and Locations
 
-* `/opt/picapport/.picapport/picapport.properties` - Picapport configuration file.
+* `/opt/picapport/.picapport/picapport.properties` - Picapport configuration file. See also https://wiki.picapport.de/display/PIC/PicApport-Server+Guide
+* `/etc/locale.conf` - Locale setting, could be changed to LANG="de_DE.UTF-8" to support german e.g.: ä, ö, ü See also https://wiki.picapport.de/pages/viewpage.action?pageId=2261139
 
 See [config](https://wiki.picapport.de/display/PIC/PicApport-Server+Guide) for further information.
 
