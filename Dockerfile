@@ -1,4 +1,4 @@
-ARG IMAGE=registry.access.redhat.com/ubi8/ubi-minimal
+ARG IMAGE=registry.access.redhat.com/ubi8/ubi
 
 
 FROM ${IMAGE}
@@ -14,15 +14,15 @@ LABEL name="briezh/picapport" \
 
 
 EXPOSE 80
+ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
 
 
 ARG JAVA=java-11-openjdk-headless
 
-RUN microdnf install --nodocs ${JAVA} langpacks-de glibc-langpack-de -y \
- && microdnf clean all
+RUN dnf install --nodocs ${JAVA} langpacks-de glibc-langpack-de \
+ && dnf update; dnf clean all
 RUN mkdir -p /opt/picapport/.picapport \
- && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties \
- && printf "%s" "LANG=de_DE.UTF-8" > /etc/locale.conf 
+ && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties 
 
 
 WORKDIR /opt/picapport
