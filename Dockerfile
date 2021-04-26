@@ -15,22 +15,22 @@ LABEL name="briezh/picapport" \
 #RUN dnf install glibc-langpack-de langpacks-de -y
 
 ARG VERSION=9-1-07
-ARG PORT=80 \
-      FOLDER_SRC=/srv/photo \
-	FOLDER_APP=/opt/picapport \
-	SUBFOLDER_CFG=/.picapport \
-	FILE_CFG=picapport.properties
+ARG PORT=80
+ARG FOLDER_SRC=/srv/photo
+ARG FOLDER_APP=/opt/picapport
+ARG SUBFOLDER_CFG=/.picapport
+ARG FILE_CFG=picapport.properties
 
-ENV PICAPPORT_PORT=${PORT} \
-	PICAPPORT_LANG=de \
-	PICAPPORT_LOG=WARNING \
-	PICAPPORT_PIC=${FOLDER_SRC} \
-	XMS=256m \
-	XMX=2048m \
-	TZ=CET \
-	LANG=en_US.UTF-8 \
-	LANGUAGE=en_US:en \
-	LC_ALL=en_US.UTF-8
+ENV PICAPPORT_PORT=${PORT}
+ENV PICAPPORT_LANG=de
+ENV PICAPPORT_LOG=WARNING
+ENV PICAPPORT_PIC=${FOLDER_SRC}
+ENV XMS=256m
+ENV XMX=2048m
+ENV TZ=CET
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 
 
