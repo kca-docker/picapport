@@ -1,52 +1,44 @@
-ARG IMAGE=fedora:latest
+ARG IMAGE=registry.access.redhat.com/ubi8/ubi-minimal
 
 
 FROM ${IMAGE}
 
 MAINTAINER Briezh Khenloo
-##	Required Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
+### Required Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels#####
 LABEL name="briezh/picapport" \
-	vendor="aka BKhenloo" \
-	maintainer="Briezh Khneloo" \
-	summary="Picapport photo server" \
-	description="Picapport | The private photo server" \
-	run="docker run -rm -p 8080:80 -v <hostdir>:srv/photo -dt docker.io/briezh/picapport:latest"
-
-#RUN dnf install glibc-langpack-de langpacks-de -y
-
-ARG VERSION=9-1-07
-
-ARG PORT=80
-
-ARG FOLDER_SRC=/srv/photo
-ARG FOLDER_APP=/opt/picapport
-ARG SUBFOLDER_CFG=/.picapport
-
-ARG FILE_CFG=picapport.properties
-
-ENV PICAPPORT_PORT=${PORT}
-ENV PICAPPORT_LANG=de
-ENV PICAPPORT_LOG=WARNING
-ENV PICAPPORT_PIC=${FOLDER_SRC}
-
-ENV XMS=256m
-ENV XMX=2048m
-
-ENV TZ=CET
-
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
+      vendor="aka BKhenloo" \
+      maintainer="Briezh Khneloo" \
+      summary="Picapport photo server" \
+      description="Picapport | The private photo server" \
+      run="docker run -rm -p 8080:80 -v <hostdir>:srv/photo -dt docker.io/briezh/picapport:latest"
 
 
+EXPOSE 80
 
-RUN dnf --nodocs --setopt=install_weak_deps=False --best install -y java && echo "$(java -version)" && dnf clean all \
- && mkdir -p ${FOLDER}${SUBFOLDER_CFG} \
- && printf "%s\n%s\n%s\n" "server.port=${PICAPPORT_PORT}" "robot.root.0.path=${PICAPPORT_PIC}" "foto.jpg.usecache=2" > ${FOLDER_APP}${SUBFOLDER_CFG}/${FILE_CFG}
+ENV TZ=CET \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
-ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar ${FOLDER}/picapport-headless.jar
 
-EXPOSE ${PICAPPORT_PORT}
-WORKDIR ${FOLDER}
+ARG JAVA=java-11-openjdk-headless
 
-ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=${FOLDER} -jar picapport-headless.jar
+RUN microdnf install --nodocs ${JAVA} \
+ && microdnf clean all \
+ && mkdir -p /opt/picapport/.picapport \
+ && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties 
+
+
+WORKDIR /opt/picapport
+ENV PICAPPORT_LANG=de \
+    PICAPPORT_LOG=WARNING \
+    XMS=256m \
+    XMX=2048m
+    
+
+
+LABEL version="9.1.07"
+ADD https://www.picapport.de/download/9-1-07/picapport-headless.jar /opt/picapport/picapport-headless.jar
+
+
+ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=/opt/picapport -jar picapport-headless.jar
