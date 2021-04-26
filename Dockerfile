@@ -14,12 +14,12 @@ LABEL name="briezh/picapport" \
 
 
 EXPOSE 80
-ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
+ENV LANG='en_EN.UTF-8' LANGUAGE='en_EN:en' LC_ALL='en_EN.UTF-8'
 
 
 ARG JAVA=java-11-openjdk-headless
 
-RUN dnf install --nodocs ${JAVA} langpacks-de glibc-langpack-de \
+RUN dnf install --nodocs ${JAVA} \
  && dnf update; dnf clean all
 RUN mkdir -p /opt/picapport/.picapport \
  && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties 
