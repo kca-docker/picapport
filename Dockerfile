@@ -16,7 +16,7 @@ EXPOSE 80
 
 
 
-RUN dnf install install glibc-langpack-de langpacks-de -y
+RUN dnf install glibc-langpack-de langpacks-de -y
 ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
 
 
