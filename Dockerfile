@@ -1,5 +1,4 @@
-ARG IMAGE=registry.access.redhat.com/ubi8/ubi
-
+ARG IMAGE=fedora:latest
 
 FROM ${IMAGE}
 
@@ -12,9 +11,13 @@ LABEL name="briezh/picapport" \
       description="Picapport | The private photo server" \
       run="docker run -rm -p 8080:80 -v <hostdir>:srv/photo -dt docker.io/briezh/picapport:latest"
 
-
 EXPOSE 80
-ENV LANG='en_EN.UTF-8' LANGUAGE='en_EN:en' LC_ALL='en_EN.UTF-8'
+
+
+
+
+RUN dnf install install glibc-langpack-de langpacks-de -y
+ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
 
 
 ARG JAVA=java-11-openjdk-headless
