@@ -17,8 +17,8 @@ EXPOSE 80
 
 ENV TZ=CET \
     LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8
+    LANGUAGE=en_US:en
+#    LC_ALL=en_US.UTF-8
 
 
 ARG JAVA=java-11-openjdk-headless
