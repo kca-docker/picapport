@@ -23,11 +23,12 @@ ENV TZ=CET \
 
 ARG JAVA=java-11-openjdk-headless
 
-RUN microdnf install --nodocs ${JAVA} \
- && microdnf clean all \
- && mkdir -p /opt/picapport/.picapport \
+RUN dnf install --nodocs ${JAVA} \
+ && dnf clean all
+ 
+ 
+RUN mkdir -p /opt/picapport/.picapport \
  && printf "%s\n%s\n%s\n" "server.port=80" "robot.root.0.path=/srv/photo" "foto.jpg.usecache=2" > /opt/picapport/.picapport/picapport.properties 
-
 
 WORKDIR /opt/picapport
 ENV PICAPPORT_LANG=de \
@@ -35,7 +36,6 @@ ENV PICAPPORT_LANG=de \
     XMS=256m \
     XMX=2048m
     
-
 ARG VERSION=9-1-07
 LABEL version="${VERSION}"
 ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar /opt/picapport/picapport-headless.jar
