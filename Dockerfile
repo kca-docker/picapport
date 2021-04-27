@@ -15,6 +15,9 @@ LABEL name="briezh/picapport" \
 
 EXPOSE 80
 
+
+RUN dnf install glibc-langpack-en
+
 ENV TZ=CET \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en
