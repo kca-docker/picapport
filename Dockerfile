@@ -1,4 +1,4 @@
-ARG IMAGE=registry.access.redhat.com/ubi8/ubi-minimal
+ARG IMAGE=registry.access.redhat.com/ubi8/ubi
 
 
 FROM ${IMAGE}
@@ -36,9 +36,9 @@ ENV PICAPPORT_LANG=de \
     XMX=2048m
     
 
-
-LABEL version="9.1.07"
-ADD https://www.picapport.de/download/9-1-07/picapport-headless.jar /opt/picapport/picapport-headless.jar
+ARG VERSION=9-1-07
+LABEL version="${VERSION}"
+ADD https://www.picapport.de/download/${VERSION}/picapport-headless.jar /opt/picapport/picapport-headless.jar
 
 
 ENTRYPOINT java -Xms$XMS -Xmx$XMX -DTRACE=$PICAPPORT_LOG -Duser.language=$PICAPPORT_LANG -Duser.home=/opt/picapport -jar picapport-headless.jar
