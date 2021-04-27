@@ -16,7 +16,7 @@ LABEL name="briezh/picapport" \
 EXPOSE 80
 
 
-RUN dnf install glibc-langpack-en
+RUN dnf install -y glibc-langpack-en
 
 ENV TZ=CET \
     LANG=en_US.UTF-8 \
@@ -26,7 +26,7 @@ ENV TZ=CET \
 
 ARG JAVA=java-11-openjdk-headless
 
-RUN dnf install --nodocs ${JAVA} \
+RUN dnf install -y --nodocs ${JAVA} \
  && dnf clean all
  
  
