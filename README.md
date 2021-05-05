@@ -25,13 +25,10 @@ $ docker run -d briezh/picapport
 ```
 
 There are two images available with a different base image
-* `latest` - ubi8-minimal
-* `fedora` - fedora (stable)
+* `latest` - ubi8:wq
 
 ```shell
 $ docker run -d briezh/picapport:latest
-or
-$ docker run -d briezh/picapport:fedora
 ```
 
 #### Environment Variables
