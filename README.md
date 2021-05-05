@@ -22,12 +22,7 @@ The image could be started by the following command.
 
 ```shell
 $ docker run -d briezh/picapport
-```
-
-There are two images available with a different base image
-* `latest` - ubi8
-
-```shell
+or
 $ docker run -d briezh/picapport:latest
 ```
 
