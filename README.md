@@ -25,7 +25,7 @@ $ docker run -d briezh/picapport
 ```
 
 There are two images available with a different base image
-* `latest` - ubi8:wq
+* `latest` - ubi8
 
 ```shell
 $ docker run -d briezh/picapport:latest
