@@ -12,7 +12,7 @@ steps:
     commands:
       - echo "Must be tagged"
     when:
-      - evaluate: 'GIT_DIR=/path/to/repo/.git git tag --list | grep -q "^10.0.04$"'
+      - evaluate: 'GIT_DIR=./.git git tag --list | grep -q "^10.0.04$"'
 
   publish:
     image: woodpeckerci/plugin-docker-buildx
