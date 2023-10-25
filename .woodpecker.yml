@@ -2,27 +2,40 @@
 variables:
   - &file Dockerfile
   - &dhub https://index.docker.io/v1/
-  - &arch linux/arm/v7,linux/arm64/v8,linux/amd64,linux/i386
+  - &arch linux/amd64 #,linux/i386,linux/arm/v7,linux/arm64/v8
   - &repo bksolutions/picapport
 
 
 steps:
   prepare:
-    image: woodpeckerci/plugin-git
+    image: alpine/curl
     commands:
-      - echo "Must be tagged"
-    when:
-      - evaluate: 'GIT_DIR=./.git git tag --list | grep -q "^10.0.04$"'
+      - echo 'Get list of available Versions:'
+      - curl https://www.picapport.de/de/photo-server-download.php --silent | sed -En "s/.*dlfile=(.*)%2fpicapport-headless.jar\"/\1/p" > picapport.vers
+      - cat ./picapport.vers
 
-  publish:
+      - echo 'Get latest version:'
+      - sed -n '1p' picapport.vers > latest.vers
+      - cat ./latest.vers
+
+      - echo 'Create download link (latest):'
+      - sed -En "s/([0-9\-]*).*/https:\\/\\/www.picapport.de\\/download\\/\1\\/picapport-headless.jar --output picapport-headless-\1.jar/p" ./latest.vers > latest.url
+      - cat ./latest.url
+
+      - echo 'Download (latest), $(cat latest.url)'
+      - curl https://www.picapport.de/download/10-4-00/picapport-headless.jar --output ./picapport-headless-10-4-00.jar
+
+  10-4-00:
     image: woodpeckerci/plugin-docker-buildx
+    group: build
     settings:
       dockerfile: *file
       platforms: *arch
       dry_run: false
       repo: *repo
       tags: 
-        - 'latest'
+        - 'test-10.4.00'
+        - 'test-latest'
       registry: *dhub
       logins:
         - registry: *dhub
@@ -31,4 +44,4 @@ steps:
           password:
             from_secret: DOCKER_BKSOL_PASS
     when:
-      branch: build
+      branch: main
