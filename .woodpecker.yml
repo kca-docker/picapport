@@ -10,7 +10,10 @@ steps:
   prepare:
     image: woodpeckerci/plugin-git
     commands:
-      - ./check_tag.sh "10.0.04"
+      - echo "Must be tagged"
+    when:
+      - evaluate: 'GIT_DIR=/path/to/repo/.git git tag --list | grep -q "^10.0.04$"'
+
   publish:
     image: woodpeckerci/plugin-docker-buildx
     settings:
