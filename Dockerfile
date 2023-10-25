@@ -70,7 +70,7 @@ EXPOSE ${PICAPPORT_PORT}
 #RUN apk add --no-cache tini $OPENJDK
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install -y tini ${OPENJDK} && \
+    apt-get install -y --no-install-recommends --no-install-suggests tini ${OPENJDK} && \
     rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT tini -- java -Xms$XMS -Xmx$XMX -DTRACE=$DTRACE \
