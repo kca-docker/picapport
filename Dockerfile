@@ -1,8 +1,8 @@
-ARG IMGNAME=debian
-ARG IMGVERS=stable-slim
+ARG IMGNAME=alpine
+ARG IMGVERS=3.18
 
 ARG VERSION=10-4-00
-ARG OPENJDK=openjdk-17-jre
+ARG OPENJDK=openjdk8
 
 ARG PORT=80
 
@@ -67,7 +67,7 @@ COPY --from=SRC /picapport /opt/picapport
 WORKDIR /opt/picapport
 EXPOSE ${PICAPPORT_PORT}
 
-RUN apt-get update && apt-get install --no-install-recommends -y tini ${OPENJDK} && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache tini $OPENJDK
 
 ENTRYPOINT tini -- java -Xms$XMS -Xmx$XMX -DTRACE=$DTRACE \
     -Duser.home=/opt/picapport \
