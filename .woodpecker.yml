@@ -7,7 +7,8 @@ variables:
 
 
 steps:
-  prepare:
+  prepare-global:
+    group: pull
     image: alpine/curl
     commands:
       - echo 'Get list of available Versions:'
@@ -22,8 +23,18 @@ steps:
       - sed -En "s/([0-9\-]*).*/https:\\/\\/www.picapport.de\\/download\\/\1\\/picapport-headless.jar --output picapport-headless-\1.jar/p" ./latest.vers > latest.url
       - cat ./latest.url
 
-      - echo 'Download (latest), $(cat latest.url)'
+  prepare-10-4.00:
+    group: pull
+    image: alpine/curl
+    commands:
       - curl https://www.picapport.de/download/10-4-00/picapport-headless.jar --output ./picapport-headless-10-4-00.jar
+
+  prepare-10-3.01:
+    group: pull
+    image: alpine/curl
+    commands:
+      - curl https://www.picapport.de/download/10-3-01/picapport-headless.jar --output ./picapport-headless-10-3-01.jar
+
 
   10-4-00:
     image: woodpeckerci/plugin-docker-buildx
@@ -36,6 +47,26 @@ steps:
       tags: 
         - 'test-10.4.00'
         - 'test-latest'
+      registry: *dhub
+      logins:
+        - registry: *dhub
+          username:
+            from_secret: DOCKER_BKSOL_USER
+          password:
+            from_secret: DOCKER_BKSOL_PASS
+    when:
+      branch: main
+
+  10-3-01:
+    image: woodpeckerci/plugin-docker-buildx
+    group: build
+    settings:
+      dockerfile: *file
+      platforms: *arch
+      dry_run: false
+      repo: *repo
+      tags: 
+        - 'test-10.3.01'
       registry: *dhub
       logins:
         - registry: *dhub
