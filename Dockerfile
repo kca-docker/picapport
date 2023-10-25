@@ -1,8 +1,8 @@
-ARG IMGNAME=alpine
-ARG IMGVERS=3.18
+ARG IMGNAME=debian
+ARG IMGVERS=stable-slim
 
 ARG VERSION=10-4-00
-ARG OPENJDK=openjdk8
+ARG OPENJDK=openjdk-17-jre
 
 ARG PORT=80
 
@@ -38,9 +38,9 @@ ARG OPENJDK
 # Define environment
 ENV PICAPPORT_LANG=de \
     PICAPPORT_PORT=$PORT \
-    DTRACE=WARNING \
-    XMS=256m \
-    XMX=1024m
+    DTRACE=INFO \
+    XMS=512m \
+    XMX=2048m
 
 # Set labels
 LABEL name="bksolutions/picapport" \
@@ -67,7 +67,11 @@ COPY --from=SRC /picapport /opt/picapport
 WORKDIR /opt/picapport
 EXPOSE ${PICAPPORT_PORT}
 
-RUN apk add --no-cache tini $OPENJDK
+#RUN apk add --no-cache tini $OPENJDK
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt update && \
+    apt -y install tini ${OPENJDK} \
+    rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT tini -- java -Xms$XMS -Xmx$XMX -DTRACE=$DTRACE \
     -Duser.home=/opt/picapport \
