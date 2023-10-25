@@ -1,5 +1,5 @@
 ARG IMGNAME=debian
-ARG IMGVERS=latest-slim
+ARG IMGVERS=stable-slim
 
 ARG VERSION=10-4-00
 ARG OPENJDK=openjdk-17-jre
