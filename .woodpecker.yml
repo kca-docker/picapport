@@ -1,0 +1,31 @@
+---
+variables:
+  - &file Dockerfile
+  - &dhub https://index.docker.io/v1/
+  - &arch linux/arm/v7,linux/arm64/v8,linux/amd64,linux/i386
+  - &repo bksolutions/picapport
+
+
+steps:
+  prepare:
+    image: woodpeckerci/plugin-git
+    commands:
+      - ./check_tag.sh "10.0.04"
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *file
+      platforms: *arch
+      dry_run: false
+      repo: *repo
+      tags: 
+        - 'latest'
+      registry: *dhub
+      logins:
+        - registry: *dhub
+          username:
+            from_secret: DOCKER_BKSOL_USER
+          password:
+            from_secret: DOCKER_BKSOL_PASS
+    when:
+      branch: build

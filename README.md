@@ -21,9 +21,9 @@ In order to run this container you'll need docker installed.
 The image could be started by the following command.  
 
 ```shell
-$ docker run -d briezh/picapport
+$ docker run -d bksolutions/picapport
 or
-$ docker run -d briezh/picapport:latest
+$ docker run -d bksolutions/picapport:latest
 ```
 
 #### Environment Variables
@@ -58,8 +58,8 @@ Then the systemd daemon must reload the service files.
 $ podman create --name <container_name> \
  -p [host]:8080 \
  -v [host]:/opt/picapport:Z \
- -l "io.containers.autoupdate=image" \
- -t briezh/picapport:latest
+ -l "io.containers.autoupdate=registry" \
+ -t bksolutions/picapport:latest
 
 $ podman generate systemd --new --name <container_name> --files
 $ mv *.service /usr/lib/systemd/
@@ -73,7 +73,7 @@ See [docs.podman.io](http://docs.podman.io/en/latest/markdown/podman-generate-sy
 
 ## Find Us
 
-* [GitHub](https://github.com/BKhenloo/holdingnuts_server)
+* [GitHub](https://github.com/kca-docker/holdingnuts_server)
 
 ## Contributing
 
@@ -82,11 +82,11 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the 
-[tags on this repository](https://github.com/BKhenloo/holdingnuts_server/tags). 
+[tags on this repository](https://github.com/kca-docker/holdingnuts_server/tags). 
 
 ## Authors
 
-* **Briezh Khenloo** - *Initial work* - [B.Khenloo](https://github.com/BKhenloo)
+* **Carsten Kruse** - *update* - [C. Kruse](https://github.com/KruseCarsten)
 
-See also the list of [contributors](https://github.com/BKhenloo/holdingnuts_server/contributors) who 
+See also the list of [contributors](https://github.com/kca-docker/holdingnuts_server/contributors) who 
 participated in this project.
