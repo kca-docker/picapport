@@ -2,7 +2,7 @@
 variables:
   - &file Dockerfile
   - &dhub https://index.docker.io/v1/
-  - &arch linux/amd64 #,linux/i386,linux/arm/v7,linux/arm64/v8
+  - &arch linux/amd64,linux/i386,linux/arm/v7,linux/arm64/v8
   - &repo bksolutions/picapport
 
 
@@ -45,8 +45,8 @@ steps:
       dry_run: false
       repo: *repo
       tags: 
-        - 'test-10.4.00'
-        - 'test-latest'
+        - '10.4.00'
+        - 'latest'
       registry: *dhub
       logins:
         - registry: *dhub
@@ -66,7 +66,7 @@ steps:
       dry_run: false
       repo: *repo
       tags: 
-        - 'test-10.3.01'
+        - '10.3.01'
       registry: *dhub
       logins:
         - registry: *dhub

@@ -1,0 +1,9 @@
+---
+steps:
+  check_files:
+    image: woodpeckerci/plugin-git
+    commands:
+      - ls -la
+      - ls -la .git
+      - ls -la .woodpecker
+      - cat Dockerfile
