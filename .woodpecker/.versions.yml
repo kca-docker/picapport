@@ -54,7 +54,7 @@ steps:
     image: appleboy/drone-git-push
     settings:
       branch: release
-      remote: ssh://git@github.com:kca-docker/picapport.git
+      remote: ssh://git@github.com/kca-docker/picapport.git
       ssh_key: 
         from_secret: GITHUB_SSH_KEY
       force: false
