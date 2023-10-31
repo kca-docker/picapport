@@ -26,14 +26,14 @@ steps:
     image: *img
     commands: 
       - rm -f ./.woodpecker/.deploy*.yaml
-      - sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:])/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]).yaml
-      - sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]).yaml
+      - sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:]')/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]').yaml
+      - sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]').yaml
       - tail -n +2 ./picapport.vers > ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
       - ls -la .woodpecker/*.yaml
       - |
         while [ -s ./picapport.vers ]
         do
-          sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:])/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]).yaml
+          sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:]')/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]').yaml
           tail -n +2 ./picapport.vers > ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
         done
       - ls -la ./.woodpecker
