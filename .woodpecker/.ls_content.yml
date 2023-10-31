@@ -7,5 +7,5 @@ steps:
       - ls -la ./.woodpecker/*.yaml
       - for f in ./.woodpecker/*.yaml; do cat $f; done
     when:
-      - path:
+      path:
         exclude: [ '*.md', 'Dockerfiles/**' ]

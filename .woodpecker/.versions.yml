@@ -1,8 +1,4 @@
 ---
-  - &repo bksolutions/picapport
-  - &branch main
-
-
 steps:
   prepare:
     image: alpine/curl
