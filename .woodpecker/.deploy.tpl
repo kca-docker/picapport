@@ -23,6 +23,8 @@ steps:
     group: build
     settings:
       dockerfile: *file
+      build_args:
+        - VERSION=<VERSION>
       platforms: *arch
       dry_run: false
       repo: *repo
