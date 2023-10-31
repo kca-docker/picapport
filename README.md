@@ -73,20 +73,16 @@ See [docs.podman.io](http://docs.podman.io/en/latest/markdown/podman-generate-sy
 
 ## Find Us
 
-* [GitHub](https://github.com/kca-docker/holdingnuts_server)
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+* [GitHub](https://github.com/kca-docker/picapport)
 
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the 
-[tags on this repository](https://github.com/kca-docker/holdingnuts_server/tags). 
+[tags on this repository](https://github.com/kca-docker/picapport/tags). 
 
 ## Authors
 
 * **Carsten Kruse** - *update* - [C. Kruse](https://github.com/KruseCarsten)
 
-See also the list of [contributors](https://github.com/kca-docker/holdingnuts_server/contributors) who 
+See also the list of [contributors](https://github.com/kca-docker/picapport/contributors) who 
 participated in this project.

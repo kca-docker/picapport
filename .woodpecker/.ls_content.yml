@@ -3,7 +3,9 @@ steps:
   check_files:
     image: woodpeckerci/plugin-git
     commands:
-      - ls -la
-      - ls -la .git
-      - ls -la .woodpecker
       - cat Dockerfile
+      - ls -la ./.woodpecker/*.yaml
+      - for f in ./.woodpecker/*.yaml; do cat $f; done
+    when:
+      - path:
+        exclude: [ '*.md', 'Dockerfiles/**' ]

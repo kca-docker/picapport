@@ -1,0 +1,35 @@
+---
+  - &repo bksolutions/picapport
+  - &branch main
+
+
+steps:
+  prepare:
+    image: alpine/curl
+    commands:
+      - echo 'Get list of available Versions:'
+      - curl https://www.picapport.de/de/photo-server-download.php --silent | sed -En "s/.*dlfile=(.*)%2fpicapport-headless.jar\"/\1/p" > picapport.vers
+      - cat ./picapport.vers
+
+      - echo 'Get latest version:'
+      - sed -n '1p' picapport.vers > latest.vers
+      - cat ./latest.vers
+
+      - echo 'Create download link (latest):'
+      - sed -En "s/([0-9\-]*).*/https:\\/\\/www.picapport.de\\/download\\/\1\\/picapport-headless.jar --output picapport-headless-\1.jar/p" ./latest.vers > latest.url
+      - cat ./latest.url
+
+  update:
+    image: alpine/curl
+    commands: 
+      - rm ./.woodpecker/.deploy*.yaml
+      - |
+        sed /<VERSION>/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
+        sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
+        tail -n +2 ./picapport.vers >> ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
+      - |
+        while [ -s ./picapport.vers ]
+        do
+          sed /<VERSION>/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
+          tail -n +2 ./picapport.vers >> ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
+        done
