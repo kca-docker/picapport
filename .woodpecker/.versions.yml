@@ -25,14 +25,14 @@ steps:
     image: alpine/curl
     commands: 
       - rm -f ./.woodpecker/.deploy*.yaml
-      - sed /<VERSION>/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
+      - sed /$(sed -n '1p'./picapport.vers)/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
       - sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
       - tail -n +2 ./picapport.vers >> ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
       - ls -la .woodpecker/*.yaml
       - |
         while [ -s ./picapport.vers ]
         do
-          sed /<VERSION>/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
+          sed /$(sed -n '1p'./picapport.vers)/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
           tail -n +2 ./picapport.vers >> ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
         done
     when:
