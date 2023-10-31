@@ -49,6 +49,8 @@ steps:
           cat $f
           echo ""
         done
+    when:
+      branch: main
 
   push:
     image: appleboy/drone-git-push
@@ -60,3 +62,5 @@ steps:
       force: true
       commit: true
       commit_message: "Create new Release CI configurations..."
+    when:
+      branch: main
