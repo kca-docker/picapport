@@ -9,7 +9,7 @@ variables:
 
 
 steps:
-  download-data:
+  download-app:
     group: prepare
     image: alpine/curl
     commands:

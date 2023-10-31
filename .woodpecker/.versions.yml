@@ -1,11 +1,12 @@
 ---
 
 variables:
+  - &img alpine/curl
   - &branch main
 
 steps:
   prepare:
-    image: alpine/curl
+    image: *img
     commands:
       - echo 'Get list of available Versions:'
       - curl https://www.picapport.de/de/photo-server-download.php --silent | sed -En "s/.*dlfile=(.*)%2fpicapport-headless.jar\"/\1/p" > picapport.vers
@@ -22,19 +23,28 @@ steps:
       branch: *branch
 
   update:
-    image: alpine/curl
+    image: *img
     commands: 
       - rm -f ./.woodpecker/.deploy*.yaml
-      - sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers)/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers).yaml
-      - sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers).yaml
+      - sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:])/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]).yaml
+      - sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]).yaml
       - tail -n +2 ./picapport.vers > ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
       - ls -la .woodpecker/*.yaml
       - |
         while [ -s ./picapport.vers ]
         do
-          sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers)/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers).yaml
+          sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:])/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]).yaml
           tail -n +2 ./picapport.vers > ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
         done
       - ls -la ./.woodpecker
     when:
       branch: *branch
+
+    verify:
+      image: *img
+      commands:
+        - |
+          for f in ./.woodpecker/*.yaml
+          do
+            cat $f
+          done
