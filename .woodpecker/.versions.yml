@@ -40,11 +40,11 @@ steps:
     when:
       branch: *branch
 
-    verify:
-      image: *img
-      commands:
-        - |
-          for f in ./.woodpecker/*.yaml
-          do
-            cat $f
-          done
+  verify:
+    image: *img
+    commands:
+      - |
+        for f in ./.woodpecker/*.yaml
+        do
+          cat $f
+        done
