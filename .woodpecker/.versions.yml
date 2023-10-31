@@ -57,6 +57,6 @@ steps:
       remote: ssh://git@github.com/kca-docker/picapport.git
       ssh_key: 
         from_secret: GITHUB_SSH_KEY
-      force: false
+      force: true
       commit: true
       commit_message: "Create new Release CI configurations..."
