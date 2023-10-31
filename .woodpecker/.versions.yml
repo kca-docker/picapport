@@ -35,5 +35,6 @@ steps:
           sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers)/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers).yaml
           tail -n +2 ./picapport.vers > ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
         done
+      - ls -la ./.woodpecker
     when:
       branch: *branch
