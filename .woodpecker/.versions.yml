@@ -2,7 +2,6 @@
 
 variables:
   - &img alpine/curl
-  - &branch main
 
 steps:
   prepare:
@@ -20,7 +19,7 @@ steps:
       - sed -En "s/([0-9\-]*).*/https:\\/\\/www.picapport.de\\/download\\/\1\\/picapport-headless.jar --output picapport-headless-\1.jar/p" ./latest.vers > latest.url
       - cat ./latest.url
     when:
-      branch: *branch
+      branch: main
 
   update:
     image: *img
@@ -38,7 +37,7 @@ steps:
         done
       - ls -la ./.woodpecker
     when:
-      branch: *branch
+      branch: main
 
   verify:
     image: *img
@@ -46,5 +45,18 @@ steps:
       - |
         for f in ./.woodpecker/*.yaml
         do
+          echo "$f: "
           cat $f
+          echo ""
         done
+
+  push:
+    image: appleboy/drone-git-push
+    settings:
+      branch: release
+      remote: ssh://git@github.com:kca-docker/picapport.git
+      ssh_key: 
+        from_secret: GITHUB_SSH_KEY
+      force: false
+      commit: true
+      commit_message: "Create new Release CI configurations..."
