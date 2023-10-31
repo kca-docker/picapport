@@ -24,7 +24,7 @@ steps:
   update:
     image: alpine/curl
     commands: 
-      - rm ./.woodpecker/.deploy*.yaml
+      - rm -f ./.woodpecker/.deploy*.yaml
       - |
         sed /<VERSION>/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
         sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
