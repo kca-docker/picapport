@@ -1,11 +1,24 @@
 ---
+
 steps:
-  check_files:
+  check_base:
+    group: ls
     image: woodpeckerci/plugin-git
     commands:
       - cat Dockerfile
-      - ls -la ./.woodpecker/*.yaml
-      - for f in ./.woodpecker/*.yaml; do cat $f; done
+      - ls -la .woodpecker
     when:
       path:
         exclude: [ '*.md', 'Dockerfiles/**' ]
+      branch: [main, release]
+
+  check_config:
+    group: ls
+    image: woodpeckerci/plugin-git
+    commands:
+      - for f in .woodpecker/*.yaml; do cat $f; done
+    when:
+      path:
+        exclude: [ '*.md', 'Dockerfiles/**' ]
+      branch: release
+      

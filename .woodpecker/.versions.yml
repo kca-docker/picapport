@@ -1,4 +1,8 @@
 ---
+
+variables:
+  - &branch main
+
 steps:
   prepare:
     image: alpine/curl
@@ -14,6 +18,8 @@ steps:
       - echo 'Create download link (latest):'
       - sed -En "s/([0-9\-]*).*/https:\\/\\/www.picapport.de\\/download\\/\1\\/picapport-headless.jar --output picapport-headless-\1.jar/p" ./latest.vers > latest.url
       - cat ./latest.url
+    when:
+      branch: *branch
 
   update:
     image: alpine/curl
@@ -29,3 +35,5 @@ steps:
           sed /<VERSION>/$(sed -n '1p'./picapport.vers)/g ./.woodpecker/.deploy.tpl >> ./.woodpecker/deploy_$(sed -n '1p'./picapport.vers).yaml
           tail -n +2 ./picapport.vers >> ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
         done
+    when:
+      branch: *branch

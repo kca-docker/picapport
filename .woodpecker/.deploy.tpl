@@ -1,4 +1,5 @@
 ---
+
 variables:
   - &file Dockerfile
   - &dhub https://index.docker.io/v1/
