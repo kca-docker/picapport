@@ -1,7 +1,7 @@
 ---
 variables:
   - &file README.md
-  - &repo bksolutions/holdingnuts
+  - &repo bksolutions/picapport
 
 steps:
   update_doc:
