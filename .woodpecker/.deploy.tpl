@@ -10,15 +10,19 @@ variables:
 
 steps:
   download-app:
-    group: prepare
+    when: 
+      - event: [push, deployment, cron, manual]
+        branch: *branch
     image: alpine/curl
+    group: prepare
     commands:
       - curl https://www.picapport.de/download/<VERSION>/picapport-headless.jar --output ./picapport-headless-<VERSION>.jar
-    when:
-      branch: *branch
 
 
   build:
+    when:
+      - event: [push, deployment, cron, manual]
+        branch: *branch
     image: woodpeckerci/plugin-docker-buildx
     group: build
     settings:
@@ -37,5 +41,3 @@ steps:
             from_secret: DOCKER_BKSOL_USER
           password:
             from_secret: DOCKER_BKSOL_PASS
-    when:
-      branch: *branch

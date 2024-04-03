@@ -1,0 +1,18 @@
+---
+variables:
+  - &file README.md
+  - &repo bksolutions/holdingnuts
+
+steps:
+  update_doc:
+    when:
+      - event: [push, deployment, manual]
+        branch: main
+    image: peterevans/dockerhub-description:3
+    environment:
+      DOCKERHUB_USERNAME:
+        from_secret: DOCKER_BKSOL_USER
+      DOCKERHUB_PASSWORD: 
+        from_secret: DOCKER_BKSOL_PASS
+      DOCKERHUB_REPOSITORY: *repo
+      README_FILEPATH: *file
