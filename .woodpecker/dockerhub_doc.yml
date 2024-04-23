@@ -7,7 +7,7 @@ steps:
   update_doc:
     when:
       - event: [push, deployment, manual]
-        branch: main
+        branch: [main]
     image: peterevans/dockerhub-description:3
     environment:
       DOCKERHUB_USERNAME:

@@ -4,7 +4,10 @@ variables:
   - &img alpine/curl
 
 steps:
-  prepare:
+  prepare-versions-list:
+    when:
+      - event: [push, tag, deployment, cron, manual]
+        branch: [main]
     image: *img
     commands:
       - echo 'Get list of available Versions:'
@@ -18,12 +21,8 @@ steps:
       - echo 'Create download link (latest):'
       - sed -En "s/([0-9\-]*).*/https:\\/\\/www.picapport.de\\/download\\/\1\\/picapport-headless.jar --output picapport-headless-\1.jar/p" ./latest.vers > latest.url
       - cat ./latest.url
-    when:
-      branch: main
 
-  update:
-    image: *img
-    commands: 
+
       - rm -f ./.woodpecker/.deploy*.yaml
       - sed "s/<VERSION>/$(sed -n '1p' ./picapport.vers | tr -d '[:space:]')/g" ./.woodpecker/.deploy.tpl > ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]').yaml
       - sed -i "/tags:/a \ \ \ \ \ \ \ \ - latest" ./.woodpecker/deploy_$(sed -n '1p' ./picapport.vers | tr -d '[:space:]').yaml
@@ -36,12 +35,8 @@ steps:
           tail -n +2 ./picapport.vers > ./picapport.tmp && mv ./picapport.tmp ./picapport.vers
         done
       - ls -la ./.woodpecker
-    when:
-      branch: main
 
-  verify:
-    image: *img
-    commands:
+
       - |
         for f in ./.woodpecker/*.yaml
         do
@@ -49,10 +44,12 @@ steps:
           cat $f
           echo ""
         done
-    when:
-      branch: main
+
 
   push:
+    when:
+      - event: [push, tag, deployment, cron, manual]
+        branch: [main]
     image: appleboy/drone-git-push
     settings:
       branch: release
@@ -61,6 +58,4 @@ steps:
         from_secret: GITHUB_SSH_KEY
       force: true
       commit: true
-      commit_message: "Create new Release CI configurations..."
-    when:
-      branch: main
+      commit_message: "Create new CI/CD Release configurations..."

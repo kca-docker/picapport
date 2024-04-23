@@ -1,0 +1,41 @@
+---
+
+variables:
+  - &img alpine/curl
+
+steps:
+  check_dockerfile:
+    when:
+      - event: [push, tag, deployment]
+        branch: [main]
+        path:
+          include: [ 'Dockerfile', 'Dockerfiles/**' ]
+    image: *img
+    commands:
+      - cat Dockerfile
+      - ls -la .Dockerfiles
+
+  check_configs:
+    when:
+      - event: [push]
+        branch: [main]
+        path:
+          include: [ '.woodpecker/*.yml', '.woodpecker/*.tpl' ]
+    image: *img
+    commands:
+      - ls -la .woodpecker/*.yml
+      - for f in .woodpecker/*.yml; do cat $f; done
+      - ls -la .woodpecker/*.tpl
+      - for f in .woodpecker/*.tpl; do cat $f; done
+
+  check_version_configs:
+    when:
+      - event: [push]
+        branch: [release]
+        path:
+          include: [ '.woodpecker/*.yaml' ]
+    image: *img
+    commands:
+      - ls -la .woodpecker/*.yaml
+      - for f in .woodpecker/*.yaml; do cat $f; done
+      
