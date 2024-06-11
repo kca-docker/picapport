@@ -4,7 +4,7 @@ variables:
   - &img alpine/curl
 
 steps:
-  - name: prepare-versions-list
+  prepare_versions_list:
     when:
       - event: [push, tag, deployment]
         branch: [main]
@@ -50,8 +50,8 @@ steps:
         done
 
 
-  - name: push
-    depends_on: [prepare-versions-list]
+  push:
+    depends_on: [prepare_versions_list]
     image: appleboy/drone-git-push
     settings:
       branch: release
