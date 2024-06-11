@@ -3,15 +3,16 @@
 variables:
   - &img alpine/curl
 
+when:
+  - event: [push, tag, deployment]
+    branch: [main]
+    path:
+      include: ['Dockerfile', '*.sh']
+      ignore_message: '[ALL]'
+      on_empty: true
+
 steps:
   prepare:
-    when:
-      - event: [push, tag, deployment]
-        branch: [main]
-        path:
-          include: ['Dockerfile', '*.sh']
-          ignore_message: '[ALL]'
-          on_empty: true
     image: *img
     commands:
       - echo 'Get list of available Versions:'
@@ -51,7 +52,6 @@ steps:
 
 
   push:
-    depends_on: [prepare]
     image: appleboy/drone-git-push
     settings:
       branch: release
