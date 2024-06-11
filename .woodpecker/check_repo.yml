@@ -10,6 +10,8 @@ steps:
         branch: [main]
         path:
           include: [ 'Dockerfile', 'Dockerfiles/**' ]
+          ignore_message: '[ALL]'
+          on_empty: true
     image: *img
     commands:
       - cat Dockerfile
@@ -21,6 +23,8 @@ steps:
         branch: [main]
         path:
           include: [ '.woodpecker/*.yml', '.woodpecker/*.tpl' ]
+          ignore_message: '[ALL]'
+          on_empty: true
     image: *img
     commands:
       - ls -la .woodpecker/*.yml
@@ -34,6 +38,8 @@ steps:
         branch: [release]
         path:
           include: [ '.woodpecker/*.yaml' ]
+          ignore_message: '[ALL]'
+          on_empty: true
     image: *img
     commands:
       - ls -la .woodpecker/*.yaml
