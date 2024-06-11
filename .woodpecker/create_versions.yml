@@ -6,8 +6,10 @@ variables:
 steps:
   prepare-versions-list:
     when:
-      - event: [push, tag, deployment, cron, manual]
-        branch: [main]
+      - path:
+          include: ['Dockerfile', '*.sh']
+          ignore_message: '[ALL]'
+          on_empty: true
     image: *img
     commands:
       - echo 'Get list of available Versions:'
@@ -47,9 +49,7 @@ steps:
 
 
   push:
-    when:
-      - event: [push, tag, deployment, cron, manual]
-        branch: [main]
+    depends_on: [prepare-versions-list]
     image: appleboy/drone-git-push
     settings:
       branch: release

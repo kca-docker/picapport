@@ -1,3 +1,12 @@
+[![Docker Image Size](https://badgen.net/docker/size/bksolutions/picapport?icon=docker&label=image%20size)](https://hub.docker.com/r/bksolutions/picapport/)
+[![Docker Pulls](https://badgen.net/docker/pulls/bksolutions/picapport?icon=docker&label=pulls)](https://hub.docker.com/r/bksolutions/picapport/)
+[![Docker Stars](https://badgen.net/docker/stars/bksolutions/picapport?icon=docker&label=stars)](https://hub.docker.com/r/bksolutions/picapport/)
+![Github stars](https://badgen.net/github/stars/kca-docker/picapport?icon=github&label=stars)
+![Github forks](https://badgen.net/github/forks/kca-docker/picapport?icon=github&label=forks)
+![Github issues](https://img.shields.io/github/issues/kca-docker/picapport)
+![Github last-commit](https://img.shields.io/github/last-commit/kca-docker/picapport)
+
+
 # Picapport  <!-- omit in toc -->
 
 [Picapport](https://www.picapport.de/de/index.php) - The private photo server

@@ -6,8 +6,10 @@ variables:
 steps:
   update_doc:
     when:
-      - event: [push, deployment, manual]
-        branch: [main]
+      - path:
+          include: ['*.md']
+          ignore_message: '[ALL]'
+          on_empty: true
     image: peterevans/dockerhub-description:3
     environment:
       DOCKERHUB_USERNAME:
