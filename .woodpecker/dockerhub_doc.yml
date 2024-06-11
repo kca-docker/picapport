@@ -6,7 +6,9 @@ variables:
 steps:
   update_doc:
     when:
-      - path:
+      - event: [push, tag, deployment]
+        branch: [main]
+        path:
           include: ['*.md']
           ignore_message: '[ALL]'
           on_empty: true
