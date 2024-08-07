@@ -14,7 +14,6 @@ steps:
       - event: [push, deployment, cron, manual]
         branch: *branch
     image: alpine/curl
-    group: prepare
     commands:
       - curl https://www.picapport.de/download/<VERSION>/picapport-headless.jar --output ./picapport-headless-<VERSION>.jar
 
@@ -24,7 +23,6 @@ steps:
       - event: [push, deployment, cron, manual]
         branch: *branch
     image: woodpeckerci/plugin-docker-buildx
-    group: build
     settings:
       dockerfile: *file
       build_args:
