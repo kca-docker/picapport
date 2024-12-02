@@ -7,11 +7,9 @@ when:
   - event: [push, tag, deployment]
     branch: [main]
     path:
-      include: ['Dockerfile', '*.sh', '*.tpl', 'create_versions.yml']
+      include: ['Dockerfile', '.scripts/*.sh', '.woodpecker/*.tpl', '.woodpecker/create_versions.yml']
       ignore_message: '[ALL]'
       on_empty: true
-  - evaluate: 'force_create == "true"'
-    branch: [main]
 
 steps:
   prepare:
