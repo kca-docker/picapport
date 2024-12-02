@@ -23,6 +23,7 @@ steps:
       - event: [push, deployment, cron, manual]
         branch: *branch
     image: woodpeckerci/plugin-docker-buildx
+    depends_on: [download-app]                        #Build and push, after app download done
     settings:
       dockerfile: *file
       build_args:
