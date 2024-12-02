@@ -7,7 +7,7 @@ when:
   - event: [push, tag, deployment]
     branch: [main]
     path:
-      include: ['Dockerfile', '*.sh']
+      include: ['Dockerfile', '*.sh', '*.tpl', 'create_versions.yml']
       ignore_message: '[ALL]'
       on_empty: true
 
