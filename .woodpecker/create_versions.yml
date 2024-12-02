@@ -3,16 +3,16 @@
 variables:
   - &img alpine/curl
 
-when:
-  - event: [push, tag, deployment]
-    branch: [main]
-    path:
-      include: ['Dockerfile', '.scripts/*.sh', '.woodpecker/*.tpl', '.woodpecker/create_versions.yml']
-      ignore_message: '[ALL]'
-      on_empty: true
 
 steps:
   prepare:
+    when:
+    - event: [push, tag, deployment]
+      branch: [main]
+      path:
+        include: ['Dockerfile', '.scripts/*.sh', '.woodpecker/*.tpl', '.woodpecker/create_versions.yml']
+        ignore_message: '[ALL]'
+        on_empty: true
     image: *img
     commands:
       - echo 'Get list of available Versions:'
@@ -53,6 +53,7 @@ steps:
 
   push:
     image: appleboy/drone-git-push
+    depends_on: prepare
     settings:
       branch: release
       remote: ssh://git@github.com/kca-docker/picapport.git
