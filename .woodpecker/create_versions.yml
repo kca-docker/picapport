@@ -52,6 +52,9 @@ steps:
 
 
   push:
+    when:
+    - event: [push, tag, deployment]
+      branch: [main]
     image: appleboy/drone-git-push
     depends_on: prepare
     settings:
