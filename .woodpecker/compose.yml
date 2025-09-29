@@ -43,7 +43,7 @@ steps:
       dry_run: false
       repo: *repo
       tags:
-        - ${RELEASE}-${VERSION}
+        - ${VERSION}-${RELEASE}
       registry: *dhub
       logins:
         - registry: *dhub
