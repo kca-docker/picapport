@@ -10,7 +10,7 @@ variables:
 matrix:
   VERSION:
     - 10-4-00
-    - 10-3-01
+#    - 10-3-01
   RELEASE:
     - picapport-headless
     - picapport
