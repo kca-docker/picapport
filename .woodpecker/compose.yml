@@ -15,7 +15,8 @@ matrix:
     - picapport-headless
     - picapport
   OPENJDK:
-    - openjdk-25-jre
+    - default-jre
+#    - openjdk-25-jre
 
 steps:
   download-app:
