@@ -25,12 +25,12 @@ jobs:
       - name: Fetch and Filter Latest 3 Versions
         id: get-versions
         run: |
-          # 1. Alle verfügbaren Versionen holen (sed fängt nun %2F und %2f ab)
+          # 1. Alle verfügbaren Versionen über ein robusteres Regex-Muster auslesen
           curl -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
-               https://www.picapport.de/de/photo-server-download.php --silent | \
-          sed -En "s/.*dlfile=(.*)%[fF]2picapport-headless.jar\"/\1/p" > all.vers
+               https://picapport.de --silent | \
+          sed -En "s/.*dlfile=([0-9a-zA-Z_-]+)%[fF]2.*/\1/p" | sort -V -r | uniq > all.vers
           
-          # 2. Sicherheits-Fallback: Falls Webseite blockiert, Version aus dem Dockerfile auslesen
+          # 2. Sicherheits-Fallback: Falls Webseite blockiert oder Struktur geändert, Dockerfile nutzen
           if [ ! -s all.vers ]; then
             echo "WARNUNG: Konnte Webseite nicht auslesen. Nutze Version aus Dockerfile als Fallback."
             DOCKERFILE_VER=$(grep -E '^ARG VERSION=' Dockerfile | head -n 1 | cut -d'=' -f2 | tr -d '[:space:]')
@@ -45,7 +45,7 @@ jobs:
           echo "latest=$LATEST_VER" >> $GITHUB_OUTPUT
           echo "Die ermittelte Version ist: $LATEST_VER"
           
-          # 4. Die Top 3 für die Matrix herausfiltern
+          # 4. Die Top 3 für die Matrix herausfiltern und in JSON umwandeln
           head -n 3 all.vers > filtered.vers
           JSON_ARRAY=$(cat filtered.vers | jq -R . | jq -s -c .)
           echo "versions=$JSON_ARRAY" >> $GITHUB_OUTPUT
@@ -69,10 +69,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Gelöst: Variablen werden als Umgebungsvariablen übergeben (kein geschachtelter Klammerfehler mehr bei curl)
       - name: Download PicApport Jar
+        env:
+          PV_VERSION: ${{ matrix.version }}
+          PV_RELEASE: ${{ matrix.release }}
         run: |
-          curl https://picapport.de{{ matrix.version }}/${{ matrix.release }}.jar \
-            --output ./${{ matrix.release }}-${{ matrix.version }}.jar
+          curl "https://picapport.de{PV_VERSION}/${PV_RELEASE}.jar" \
+            --output "./${PV_RELEASE}-${PV_VERSION}.jar"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
