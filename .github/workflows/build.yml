@@ -19,23 +19,21 @@ jobs:
       latest_version: ${{ steps.get-versions.outputs.latest }}
       is_fallback: ${{ steps.get-versions.outputs.fallback }}
     steps:
-      - name: Checkout Code (wird für Dockerfile-Auslesen benötigt)
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Fetch and Filter Latest 3 Versions
         id: get-versions
         run: |
-          # 1. Alle verfügbaren Versionen mit simuliertem Browser-Header holen
+          # 1. Alle verfügbaren Versionen holen (sed fängt nun %2F und %2f ab)
           curl -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
-               https://picapport.de --silent | \
-          sed -En "s/.*dlfile=(.*)%2fpicapport-headless.jar\"/\1/p" > all.vers
+               https://www.picapport.de/de/photo-server-download.php --silent | \
+          sed -En "s/.*dlfile=(.*)%[fF]2picapport-headless.jar\"/\1/p" > all.vers
           
           # 2. Sicherheits-Fallback: Falls Webseite blockiert, Version aus dem Dockerfile auslesen
           if [ ! -s all.vers ]; then
             echo "WARNUNG: Konnte Webseite nicht auslesen. Nutze Version aus Dockerfile als Fallback."
-            # Extrahiert z.B. "10-4-00" aus "ARG VERSION=10-4-00"
             DOCKERFILE_VER=$(grep -E '^ARG VERSION=' Dockerfile | head -n 1 | cut -d'=' -f2 | tr -d '[:space:]')
-            
             echo "$DOCKERFILE_VER" > all.vers
             echo "fallback=true" >> $GITHUB_OUTPUT
           else
@@ -82,14 +80,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Intelligente Tag-Logik zum Schutz von "latest"
       - name: Determine Docker Tags
         id: docker_tags
         run: |
-          # Jede Version bekommt immer ihr spezifisches Versions-Tag
           TAGS="bksolutions/picapport:${{ matrix.version }}-${{ matrix.release }}"
           
-          # Nur wenn das Scraping ERFOLGREICH war, vergeben wir "latest"
           if [ "${{ needs.discover-versions.outputs.is_fallback }}" = "false" ]; then
             if [ "${{ matrix.version }}" = "${{ needs.discover-versions.outputs.latest_version }}" ]; then
               if [ "${{ matrix.release }}" = "picapport" ]; then
@@ -98,10 +93,7 @@ jobs:
                 TAGS="$TAGS,bksolutions/picapport:latest-headless"
               fi
             fi
-          else
-            echo "Pipeline läuft im Fallback-Modus. 'latest'-Tags werden übersprungen, um Docker Hub zu schützen."
           fi
-          
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Build and Push Image
