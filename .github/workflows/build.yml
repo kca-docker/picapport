@@ -1,0 +1,114 @@
+name: Build PicApport Matrix and Push
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Ermöglicht manuelles Starten im GitHub-UI
+  schedule:
+    - cron: '0 0 * * 0' # Läuft jeden Sonntag vollautomatisch
+
+jobs:
+  discover-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      version_matrix: ${{ steps.get-versions.outputs.versions }}
+      latest_version: ${{ steps.get-versions.outputs.latest }}
+    steps:
+      - name: Fetch and Filter Latest 3 Versions
+        id: get-versions
+        run: |
+          # 1. Alle verfügbaren Versionen holen
+          curl https://picapport.de --silent | \
+          sed -En "s/.*dlfile=(.*)%2fpicapport-headless.jar\"/\1/p" > all.vers
+          
+          # 2. Die allerneueste Version wegspeichern (erste Zeile)
+          LATEST_VER=$(head -n 1 all.vers)
+          echo "latest=$LATEST_VER" >> $GITHUB_OUTPUT
+          echo "Die absolut neueste Version ist: $LATEST_VER"
+          
+          # 3. Die Top 3 für die Matrix herausfiltern
+          head -n 3 all.vers > filtered.vers
+          JSON_ARRAY=$(cat filtered.vers | jq -R . | jq -s -c .)
+          echo "versions=$JSON_ARRAY" >> $GITHUB_OUTPUT
+
+  build-matrix:
+    runs-on: ubuntu-latest
+    needs: discover-versions
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJson(needs.discover-versions.outputs.version_matrix) }}
+        release: ["picapport-headless", "picapport"]
+        openjdk: ["default-jre"]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (für Multi-Architektur)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download PicApport Jar
+        run: |
+          curl https://picapport.de{{ matrix.version }}/${{ matrix.release }}.jar \
+            --output ./${{ matrix.release }}-${{ matrix.version }}.jar
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Dynamische Ermittlung der Tags für diesen spezifischen Matrix-Durchlauf
+      - name: Determine Docker Tags
+        id: docker_tags
+        run: |
+          # Standard-Tag für jede Version setzen
+          TAGS="bksolutions/picapport:${{ matrix.version }}-${{ matrix.release }}"
+          
+          # Prüfen, ob dieser Matrix-Durchlauf der allerneuesten Version entspricht
+          if [ "${{ matrix.version }}" = "${{ needs.discover-versions.outputs.latest_version }}" ]; then
+            if [ "${{ matrix.release }}" = "picapport" ]; then
+              # Die normale 'picapport' Version wird zu "latest"
+              TAGS="$TAGS,bksolutions/picapport:latest"
+            elif [ "${{ matrix.release }}" = "picapport-headless" ]; then
+              # Die 'headless' Version bekommt ein eigenes "latest-headless" Tag
+              TAGS="$TAGS,bksolutions/picapport:latest-headless"
+            fi
+          fi
+          
+          # Tags für den nächsten Schritt bereitstellen
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/386,linux/arm/v7,linux/arm64
+          push: true
+          build-args: |
+            VERSION=${{ matrix.version }}
+            RELEASE=${{ matrix.release }}
+            OPENJDK=${{ matrix.openjdk }}
+          tags: ${{ steps.docker_tags.outputs.tags }}
+
+  update-readme:
+    runs-on: ubuntu-latest
+    needs: build-matrix
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Update Docker Hub Description
+        uses: peter-evans/dockerhub-description@v5
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: bksolutions/picapport
