@@ -56,6 +56,12 @@ jobs:
           echo "latest=$LATEST_VER" >> $GITHUB_OUTPUT
           
           head -n 3 all.vers > filtered.vers
+          
+          # NEU: Ausgabe im GitHub Actions Build Log
+          echo "=== Gefundene Top 3 Versionen für den Build ==="
+          cat filtered.vers
+          echo "================================================"
+          
           JSON_ARRAY=$(cat filtered.vers | jq -R . | jq -s -c .)
           echo "versions=$JSON_ARRAY" >> $GITHUB_OUTPUT
 
@@ -81,7 +87,7 @@ jobs:
       # Gelöst: Eindeutige URL-Syntax über native GitHub-Variablen
       - name: Download PicApport Jar
         run: |
-          curl -L 'https://picapport.de{{ matrix.version }}/${{ matrix.release }}.jar' \
+          curl -L 'https://picapport.de/download/{{ matrix.version }}/${{ matrix.release }}.jar' \
             --output './${{ matrix.release }}-${{ matrix.version }}.jar'
 
       - name: Login to Docker Hub
