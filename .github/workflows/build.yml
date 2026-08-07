@@ -74,7 +74,7 @@ jobs:
       matrix:
         version: ${{ fromJson(needs.discover-versions.outputs.version_matrix) }}
         release: ["picapport-headless", "picapport"]
-        openjdk: ["default-jre"]
+      #  openjdk: ["default-jre"]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -123,19 +123,19 @@ jobs:
           build-args: |
             VERSION=${{ matrix.version }}
             RELEASE=${{ matrix.release }}
-            OPENJDK=${{ matrix.openjdk }}
+          #  OPENJDK=${{ matrix.openjdk }}
           tags: ${{ steps.docker_tags.outputs.tags }}
 
-  update-readme:
-    runs-on: ubuntu-latest
-    needs: build-matrix
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+  # update-readme:
+  #   runs-on: ubuntu-latest
+  #   needs: build-matrix
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
       
-      - name: Update Docker Hub Description
-        uses: peter-evans/dockerhub-description@v5
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: bksolutions/picapport
+  #     - name: Update Docker Hub Description
+  #       uses: peter-evans/dockerhub-description@v5
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #         repository: bksolutions/picapport
