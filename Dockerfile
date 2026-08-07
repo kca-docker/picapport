@@ -71,4 +71,4 @@ RUN apk add --no-cache tini fontconfig ttf-dejavu
 HEALTHCHECK --interval=60s --timeout=5s --start-period=45s --retries=3 \
   CMD ["/bin/sh", "-c", "wget -q -O - http://localhost:${PICAPPORT_PORT}/ > /dev/null || exit 1"]
 
-ENTRYPOINT ["tini", "--", "sh", "-c", "java -Xms${XMS} -Xmx${XMX} -XX:MaxRAMPercentage=75.0 -DTRACE=${DTRACE} -Duser.home=${WDIR_PATH} -Duser.language=de -jar ${RELEASE_FILE}"]
+ENTRYPOINT ["tini", "--", "java", "-Xms${XMS}", "-Xmx${XMX}", "-XX:MaxRAMPercentage=75.0", "-DTRACE=${DTRACE}", "-Duser.home=${WDIR_PATH}", "-Duser.language=de", "-jar", "${RELEASE_FILE}"]
