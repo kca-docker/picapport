@@ -1,26 +1,31 @@
 # Offizielles, minimales Java-Runtime-Image auf Alpine-Basis
 ARG IMGNAME=eclipse-temurin
-ARG IMGVERS=17-jre-alpine
+ARG IMGVERS=21-jre-alpine
 
 ARG VERSION=10-4-00
 ARG RELEASE=picapport-headless
 ARG PORT=80
 
+
 ## STAGE 1: Konfiguration und App vorbereiten (Multi-Stage)
-FROM ${IMGNAME}:${IMGVERS} AS SRC
+# FROM ${IMGNAME}:${IMGVERS} AS SRC
 
-ARG WDIR=/picapport/.picapport
-ARG PORT
-ARG VERSION
-ARG RELEASE
+# ARG WDIR=/picapport/.picapport
+# ARG PORT
+# ARG VERSION
+# ARG RELEASE
 
-RUN mkdir -p "$WDIR" && \
-    printf "%s\n%s\n%s\n" "server.port=$PORT" "robot.root.0.path=/srv/photos" "foto.jpg.usecache=2" > "${WDIR}/picapport.properties"
+# RUN mkdir -p "$WDIR" && \
+#     printf "%s\n%s\n%s\n" "server.port=$PORT" "robot.root.0.path=/srv/photos" "foto.jpg.usecache=2" > "${WDIR}/picapport.properties"
 
-COPY ./${RELEASE}-${VERSION}.jar /picapport/${RELEASE}.jar
+# COPY ./${RELEASE}-${VERSION}.jar /picapport/${RELEASE}.jar
 
-## STAGE 2: Das finale, schlanke Produktions-Image
+
+## STAGE X: Das finale, schlanke Produktions-Image
 FROM ${IMGNAME}:${IMGVERS}
+
+ARG WDIR=/opt/picapport
+ARG CDIR=/opt/picapport/.picapport
 
 ARG VERSION
 ARG RELEASE
@@ -37,7 +42,7 @@ LABEL name="bksolutions/picapport" \
       summary="Photo gallery" \
       description="PicApport self-hosted private photo server with photo gallery and photo management." \
       version=${VERSION}\
-      openjdk=${OPENJDK} \
+      openjdk=${IMGVERS} \
       bksolutions.docker.picapport.ci-build="github-actions" \
       bksolutions.docker.picapport.ci-build.source="https://github.com" \
       bksolutions.docker.picapport.run="docker run -rm --name picapport -p 8080:80 -v ./photo:srv/photo -dt docker.io/bksolutions/picapport" \
@@ -47,8 +52,14 @@ LABEL name="bksolutions/picapport" \
       org.opencontainers.image.version=${VERSION} \
       org.opencontainers.image.release=${RELEASE}
 
-COPY --from=SRC /picapport /opt/picapport
-WORKDIR /opt/picapport
+
+RUN mkdir -p "$CDIR" && \
+    printf "%s\n%s\n%s\n" "server.port=$PORT" "robot.root.0.path=/srv/photos" "foto.jpg.usecache=2" > "${CDIR}/picapport.properties"
+
+#COPY --from=SRC /picapport /opt/picapport
+COPY ./${RELEASE}-${VERSION}.jar /opt/picapport/${RELEASE}.jar
+
+WORKDIR ${WDIR}
 EXPOSE ${PICAPPORT_PORT}
 
 # Installiert Tini (Init-Prozess) sowie Grafikbibliotheken für stabile Bildverarbeitung.
@@ -60,4 +71,5 @@ RUN apk add --no-cache tini fontconfig ttf-dejavu
 HEALTHCHECK --interval=60s --timeout=5s --start-period=45s --retries=3 \
   CMD ["/bin/sh", "-c", "wget -q -O - http://localhost:${PICAPPORT_PORT}/ > /dev/null || exit 1"]
 
-ENTRYPOINT ["tini", "--", "java", "-Xms512m", "-Xmx2048m", "-DTRACE=INFO", "-Duser.home=/opt/picapport", "-Duser.language=de", "-jar", "${RELEASE}.jar"]
+ENTRYPOINT ["tini", "--"]
+CMD ["sh", "-c", "java -Xms${XMS} -Xmx${XMX} -XX:MaxRAMPercentage=75.0 -DTRACE=${DTRACE} -Duser.home=${WDIR_PATH} -Duser.language=de -jar ${RELEASE_FILE}"]
