@@ -22,12 +22,12 @@ ARG CDIR=/opt/picapport/.picapport
 # ENV-Variablen für die Laufzeit (Runtime)
 ENV PICAPPORT_LANG=de \
     PICAPPORT_PORT=$PORT \
+    PICAPPORT_PATH=${WDIR} \
+    RELEASE_FILE=${RELEASE}.jar \
     DTRACE=INFO \
     XMS=512m \
     XMX=2048m \
-    XRAM=75.0 \
-    RELEASE_FILE=${RELEASE}.jar \
-    WDIR_PATH=${WDIR}
+    XRAM=75.0 
 
 LABEL name="bksolutions/picapport" \
       vendor="BKSolutions" \
@@ -54,7 +54,7 @@ RUN mkdir -p "$CDIR" && \
 # JAR-Datei kopieren
 COPY ./${RELEASE}-${VERSION}.jar ${WDIR}/${RELEASE}.jar
 
-WORKDIR ${WDIR_PATH}
+WORKDIR ${PICAPPORT_PATH}
 EXPOSE ${PICAPPORT_PORT}
 
 # DOCKER HEALTHCHECK
@@ -62,4 +62,4 @@ HEALTHCHECK --interval=60s --timeout=5s --start-period=45s --retries=3 \
   CMD ["/bin/sh", "-c", "wget -q -O - http://localhost:${PICAPPORT_PORT}/ > /dev/null || exit 1"]
 
 # KORREKTUR: Exec-Form mit expliziter Shell-Aktivierung, damit ENV-Variablen aufgelöst werden!
-ENTRYPOINT ["tini", "--", "/bin/sh", "-c", "java -Xms${XMS} -Xmx${XMX} -XX:MaxRAMPercentage=${XRAM} -DTRACE=${DTRACE} -Duser.home=${WDIR_PATH} -Duser.language=${PICAPPORT_LANG} -jar ${WDIR_PATH}/${RELEASE_FILE}"]
+ENTRYPOINT ["tini", "--", "/bin/sh", "-c", "java -Xms${XMS} -Xmx${XMX} -XX:MaxRAMPercentage=${XRAM} -DTRACE=${DTRACE} -Duser.home=${PICAPPORT_PATH} -Duser.language=${PICAPPORT_LANG} -jar ${PICAPPORT_PATH}/${RELEASE_FILE}"]
