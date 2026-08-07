@@ -35,7 +35,10 @@ ENV PICAPPORT_LANG=de \
     PICAPPORT_PORT=$PORT \
     DTRACE=INFO \
     XMS=512m \
-    XMX=2048m
+    XMX=2048m \
+    XRAM=75.0 \
+    RELEASE_FILE=${RELEASE}.jar \
+    WDIR_PATH=${WDIR}
 
 LABEL name="bksolutions/picapport" \
       vendor="BKSolutions" \
@@ -71,4 +74,4 @@ RUN apk add --no-cache tini fontconfig ttf-dejavu
 HEALTHCHECK --interval=60s --timeout=5s --start-period=45s --retries=3 \
   CMD ["/bin/sh", "-c", "wget -q -O - http://localhost:${PICAPPORT_PORT}/ > /dev/null || exit 1"]
 
-ENTRYPOINT ["tini", "--", "java", "-Xms${XMS}", "-Xmx${XMX}", "-XX:MaxRAMPercentage=75.0", "-DTRACE=${DTRACE}", "-Duser.home=${WDIR_PATH}", "-Duser.language=de", "-jar", "${RELEASE_FILE}"]
+ENTRYPOINT ["tini", "--", "java", "-Xms${XMS}", "-Xmx${XMX}", "-XX:MaxRAMPercentage=${XRAM}", "-DTRACE=${DTRACE}", "-Duser.home=${WDIR_PATH}", "-Duser.language=${PICAPPORT_LANG}", "-jar", "${RELEASE_FILE}"]
