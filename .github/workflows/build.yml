@@ -56,9 +56,9 @@ jobs:
           LATEST_VER=$(head -n 1 all.vers)
           echo "latest=$LATEST_VER" >> $GITHUB_OUTPUT
           
-          head -n 3 all.vers > filtered.vers
+          head -n 2 all.vers > filtered.vers
           
-          echo "=== Gefundene Top 3 Versionen für den Build ==="
+          echo "=== Gefundene Top 2 Versionen für den Build ==="
           cat filtered.vers
           echo "================================================"
           
